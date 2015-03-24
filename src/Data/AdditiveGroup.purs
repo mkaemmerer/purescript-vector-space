@@ -8,9 +8,10 @@ infixl 6 ^+^
 infixl 6 ^-^
 
 
--- | AdditiveGroups should satisfy the following laws
+-- | Additive groups should satisfy these laws
 -- |
 -- | - Associativity: `x ^+^ (y ^+^ z) = (x ^+^ y) ^+^ z`
+-- | - Commutativity: `x ^+^ y = y ^+^ x`
 -- | - Right Identity: `x ^+^ zeroV = x`
 -- | - Left Identity: `zeroV ^+^ x = x`
 -- | - Inverse: `x ^+^ negateV x = negateV x ^+^ x = zeroV`

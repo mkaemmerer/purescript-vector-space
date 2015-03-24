@@ -11,13 +11,26 @@ infixr 7 ^/
 infixr 7 ^*
 
 
--- | Vector space `v`.
-class (AdditiveGroup v) <= VectorSpace v s where
+-- | Vector spaces should satisfy these laws
+-- | 
+-- | - Identity: `one *^ v = v`
+-- | - Compatibility: `a * (b *^ v) = (a * b) *^ v`
+-- | - Distributivity1: `a *^ (u ^+^ v) = (a *^ u) ^+^ (a *^ v)`
+-- | - Distributivity2: `(a + b) *^ v = (a *^ v) + (b *^ v)`
+-- |
+class (Ring s, AdditiveGroup v) <= VectorSpace v s where
   -- | Scale a vector
   (*^) :: s -> v -> v
 
 -- | Adds inner (dot) products.
-class (VectorSpace v s, AdditiveGroup s) <= InnerSpace v s where
+-- | Inner products should be linear and positive definite,
+-- | i.e. they should satisfy
+-- | 
+-- | - Linearity1: `(a *^ u) <.> v = a * (u <.> v)`
+-- | - Linearity2: `(u ^+^ v) <.> w = (u <.> w) + (v <.> w)`
+-- | - Positive Definite: `v <.> v = zero` iff `v = zeroV`
+-- |
+class (VectorSpace v s) <= InnerSpace v s where
   -- | Inner/dot product
   (<.>) :: v -> v -> s
 
@@ -66,10 +79,10 @@ instance innerSpaceRing :: (Ring s) => InnerSpace s s where
 
 -- TODO: the constraint (AdditiveGroup (Tuple u v)) should be inferred from (VectorSpace u s) and (VectorSpace v s)
 -- instance vectorSpaceTuple :: (VectorSpace u s, VectorSpace v s) => VectorSpace (Tuple u v) s where
-instance vectorSpaceTuple :: (VectorSpace u s, VectorSpace v s, AdditiveGroup (Tuple u v)) => VectorSpace (Tuple u v) s where
+instance vectorSpaceTuple :: (Ring s, VectorSpace u s, VectorSpace v s, AdditiveGroup (Tuple u v)) => VectorSpace (Tuple u v) s where
   (*^) s (Tuple u v) = Tuple (s*^u) (s*^v)
 
 -- TODO: the constraints (AdditiveGroup (Tuple v v)) and (AdditiveGroup s) should be inferred from (InnerSpace v s)
 -- instance innerSpaceTuple :: (InnerSpace v s) => InnerSpace (Tuple v v) s where
-instance innerSpaceTuple :: (InnerSpace v s, AdditiveGroup (Tuple v v), AdditiveGroup s) => InnerSpace (Tuple v v) s where
+instance innerSpaceTuple :: (Ring s, InnerSpace v s, AdditiveGroup (Tuple v v)) => InnerSpace (Tuple v v) s where
   (<.>) (Tuple u v) (Tuple u' v') = (u <.> u') ^+^ (v <.> v')

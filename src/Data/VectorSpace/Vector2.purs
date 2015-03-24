@@ -6,7 +6,6 @@ import Data.AdditiveGroup
 import Control.Apply (lift2)
 
 
--- instance additiveGroupVec2 :: (AdditiveGroup v) => AdditiveGroup (V.Vec Two v) where
 instance additiveGroupVec2 :: (V.Vector (V.Vec Two v), AdditiveGroup v) => AdditiveGroup (V.Vec Two v) where
   zeroV     = V.fromArray [zeroV, zeroV]
   (^+^)     = lift2 (^+^)
