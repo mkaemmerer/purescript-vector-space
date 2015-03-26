@@ -1,5 +1,6 @@
 module Data.AffineSpace where
 
+import Data.Tuple
 import Data.AdditiveGroup
 import Data.VectorSpace
 
@@ -33,5 +34,5 @@ instance affineSpaceRing :: (Ring s) => AffineSpace s s s where
   (&+^) p v = p + v
 
 instance affineSpaceTuple :: (AffineSpace p u s, AffineSpace q v s) => AffineSpace (Tuple p q) (Tuple u v) s where
-  (&-&) (Tuple p q) (Tuple p' q') = Tuple (u - u') (v - v')
+  (&-&) (Tuple p q) (Tuple p' q') = Tuple (p - p') (q - q')
   (&+^) (Tuple p q) (Tuple u v)   = Tuple (p &+^ u) (q &+^ v)
