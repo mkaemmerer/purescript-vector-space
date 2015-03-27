@@ -57,6 +57,13 @@ instance additiveGroupTuple :: (AdditiveGroup u, AdditiveGroup v) => AdditiveGro
 ```
 
 
+#### `additiveGroupArr`
+
+``` purescript
+instance additiveGroupArr :: (AdditiveGroup v) => AdditiveGroup (u -> v)
+```
+
+
 
 ## Module Data.VectorSpace
 
@@ -162,14 +169,35 @@ instance innerSpaceRing :: (Ring s) => InnerSpace s s
 #### `vectorSpaceTuple`
 
 ``` purescript
-instance vectorSpaceTuple :: (Ring s, VectorSpace u s, VectorSpace v s, AdditiveGroup (Tuple u v)) => VectorSpace (Tuple u v) s
+instance vectorSpaceTuple :: (Ring s, AdditiveGroup (Tuple u v), VectorSpace u s, VectorSpace v s) => VectorSpace (Tuple u v) s
 ```
 
 #### `innerSpaceTuple`
 
 ``` purescript
-instance innerSpaceTuple :: (Ring s, InnerSpace v s, AdditiveGroup (Tuple v v)) => InnerSpace (Tuple v v) s
+instance innerSpaceTuple :: (Ring s, AdditiveGroup (Tuple v v), InnerSpace v s) => InnerSpace (Tuple v v) s
 ```
+
+#### `vectorSpaceArr`
+
+``` purescript
+instance vectorSpaceArr :: (Ring s, AdditiveGroup (a -> v), VectorSpace v s) => VectorSpace (a -> v) s
+```
+
+
+#### `vectorSpaceArr2`
+
+``` purescript
+instance vectorSpaceArr2 :: (Ring (a -> s), AdditiveGroup (a -> v), VectorSpace v s) => VectorSpace (a -> v) (a -> s)
+```
+
+
+#### `innerSpaceArr`
+
+``` purescript
+instance innerSpaceArr :: (VectorSpace (a -> v) (a -> s), InnerSpace v s) => InnerSpace (a -> v) (a -> s)
+```
+
 
 
 ## Module Data.VectorSpace.Vector
@@ -179,6 +207,7 @@ instance innerSpaceTuple :: (Ring s, InnerSpace v s, AdditiveGroup (Tuple v v)) 
 ``` purescript
 instance vectorSpaceVec :: (AdditiveGroup (V.Vec s v), Ring v) => VectorSpace (V.Vec s v) v
 ```
+
 
 #### `innerSpaceVec`
 
@@ -196,6 +225,7 @@ instance additiveGroupVec2 :: (V.Vector (V.Vec Two v), AdditiveGroup v) => Addit
 ```
 
 
+
 ## Module Data.VectorSpace.Vector3
 
 #### `additiveGroupVec3`
@@ -205,6 +235,7 @@ instance additiveGroupVec3 :: (V.Vector (V.Vec Three v), AdditiveGroup v) => Add
 ```
 
 
+
 ## Module Data.VectorSpace.Vector4
 
 #### `additiveGroupVec4`
@@ -212,6 +243,7 @@ instance additiveGroupVec3 :: (V.Vector (V.Vec Three v), AdditiveGroup v) => Add
 ``` purescript
 instance additiveGroupVec4 :: (V.Vector (V.Vec Four v), AdditiveGroup v) => AdditiveGroup (V.Vec Four v)
 ```
+
 
 
 

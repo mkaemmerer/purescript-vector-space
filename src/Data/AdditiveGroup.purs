@@ -48,3 +48,9 @@ instance additiveGroupTuple :: (AdditiveGroup u, AdditiveGroup v) => AdditiveGro
   zeroV                           = Tuple zeroV zeroV
   (^+^) (Tuple u v) (Tuple u' v') = Tuple (u^+^u') (v^+^v')
   negateV (Tuple u v)             = Tuple (negateV u) (negateV v)
+
+instance additiveGroupArr :: (AdditiveGroup v) => AdditiveGroup (u -> v) where
+  zeroV   = pure zeroV
+  (^+^)   = lift2 (^+^)
+  negateV = (negateV <$>)
+  

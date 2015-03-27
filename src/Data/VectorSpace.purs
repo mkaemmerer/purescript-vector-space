@@ -79,10 +79,20 @@ instance innerSpaceRing :: (Ring s) => InnerSpace s s where
 
 -- TODO: the constraint (AdditiveGroup (Tuple u v)) should be inferred from (VectorSpace u s) and (VectorSpace v s)
 -- instance vectorSpaceTuple :: (VectorSpace u s, VectorSpace v s) => VectorSpace (Tuple u v) s where
-instance vectorSpaceTuple :: (Ring s, VectorSpace u s, VectorSpace v s, AdditiveGroup (Tuple u v)) => VectorSpace (Tuple u v) s where
+instance vectorSpaceTuple :: (Ring s, AdditiveGroup (Tuple u v), VectorSpace u s, VectorSpace v s) => VectorSpace (Tuple u v) s where
   (*^) s (Tuple u v) = Tuple (s*^u) (s*^v)
 
 -- TODO: the constraints (AdditiveGroup (Tuple v v)) and (AdditiveGroup s) should be inferred from (InnerSpace v s)
 -- instance innerSpaceTuple :: (InnerSpace v s) => InnerSpace (Tuple v v) s where
-instance innerSpaceTuple :: (Ring s, InnerSpace v s, AdditiveGroup (Tuple v v)) => InnerSpace (Tuple v v) s where
+instance innerSpaceTuple :: (Ring s, AdditiveGroup (Tuple v v), InnerSpace v s) => InnerSpace (Tuple v v) s where
   (<.>) (Tuple u v) (Tuple u' v') = (u <.> u') ^+^ (v <.> v')
+
+
+instance vectorSpaceArr :: (Ring s, AdditiveGroup (a -> v), VectorSpace v s) => VectorSpace (a -> v) s where
+  (*^) s = (<$>) (s *^)
+
+instance vectorSpaceArr2 :: (Ring (a -> s), AdditiveGroup (a -> v), VectorSpace v s) => VectorSpace (a -> v) (a -> s) where
+  (*^) = lift2 (*^)
+
+instance innerSpaceArr :: (VectorSpace (a -> v) (a -> s), InnerSpace v s) => InnerSpace (a -> v) (a -> s) where
+ (<.>) = lift2 (<.>)

@@ -1,6 +1,6 @@
 {
   "name": "purescript-vector-space",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Vector math",
   "authors": [
     "Matt Kaemmerer <matthew.kaemmerer@gmail.com>"
