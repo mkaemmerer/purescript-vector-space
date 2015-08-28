@@ -33,14 +33,18 @@ class (Ring s, AdditiveGroup v) <= VectorSpace v s where
 -- | Adds inner (dot) products.
 -- | Inner products should be linear and positive definite,
 -- | i.e. they should satisfy
--- | 
+-- |
 -- | - Linearity1: `(a *^ u) <.> v = a * (u <.> v)`
 -- | - Linearity2: `(u ^+^ v) <.> w = (u <.> w) + (v <.> w)`
 -- | - Positive Definite: `v <.> v = zero` iff `v = zeroV`
 -- |
 class (VectorSpace v s) <= InnerSpace v s where
   -- | Inner/dot product
-  (<.>) :: v -> v -> s
+  innerProduct :: v -> v -> s
+
+-- | Alias for `innerProduct`
+(<.>) :: forall v s. (InnerSpace v s) => v -> v -> s
+(<.>) = innerProduct
 
 -- | Vector divided by scalar
 (^/) :: forall v s. (VectorSpace v s, ModuloSemiring s) => v -> s -> v
@@ -82,7 +86,7 @@ instance vectorSpaceRing :: (Ring s) => VectorSpace s s where
   scaleV x y = x * y
 
 instance innerSpaceRing :: (Ring s) => InnerSpace s s where
-  (<.>) x y = x * y
+  innerProduct x y = x * y
 
 
 -- TODO: the constraint (AdditiveGroup (Tuple u v)) should be inferred from (VectorSpace u s) and (VectorSpace v s)
@@ -93,7 +97,7 @@ instance vectorSpaceTuple :: (Ring s, AdditiveGroup (Tuple u v), VectorSpace u s
 -- TODO: the constraints (AdditiveGroup (Tuple v v)) and (AdditiveGroup s) should be inferred from (InnerSpace v s)
 -- instance innerSpaceTuple :: (InnerSpace v s) => InnerSpace (Tuple v v) s where
 instance innerSpaceTuple :: (Ring s, AdditiveGroup (Tuple v v), InnerSpace v s) => InnerSpace (Tuple v v) s where
-  (<.>) (Tuple u v) (Tuple u' v') = (u <.> u') ^+^ (v <.> v')
+  innerProduct (Tuple u v) (Tuple u' v') = (u <.> u') ^+^ (v <.> v')
 
 
 instance vectorSpaceArr :: (Ring s, AdditiveGroup (a -> v), VectorSpace v s) => VectorSpace (a -> v) s where
@@ -103,7 +107,7 @@ instance vectorSpaceArr2 :: (Ring (a -> s), AdditiveGroup (a -> v), VectorSpace 
   scaleV = lift2 (*^)
 
 instance innerSpaceArr :: (VectorSpace (a -> v) (a -> s), InnerSpace v s) => InnerSpace (a -> v) (a -> s) where
- (<.>) = lift2 (<.>)
+  innerProduct = lift2 (<.>)
 
 
 instance vectorSpaceVec :: (AdditiveGroup (Vec s v), Ring v) => VectorSpace (Vec s v) v where
@@ -111,4 +115,4 @@ instance vectorSpaceVec :: (AdditiveGroup (Vec s v), Ring v) => VectorSpace (Vec
 
 -- instance innerSpaceVec :: (VectorSpace (Vec s v) v) => InnerSpace (Vec s v) v where
 instance innerSpaceVec :: (VectorSpace (Vec s v) v, Ring v) => InnerSpace (Vec s v) v where
-  (<.>) v v' = foldl (^+^) zeroV $ (<.>) <$> v <*> v'
+  innerProduct v v' = foldl (^+^) zeroV $ (<.>) <$> v <*> v'
