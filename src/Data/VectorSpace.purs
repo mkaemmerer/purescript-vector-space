@@ -24,7 +24,11 @@ infixr 7 ^*
 -- |
 class (Ring s, AdditiveGroup v) <= VectorSpace v s where
   -- | Scale a vector
-  (*^) :: s -> v -> v
+  scaleV :: s -> v -> v
+
+-- | Alias for `scaleV`
+(*^) :: forall v s. (VectorSpace v s) => s -> v -> v
+(*^) = scaleV
 
 -- | Adds inner (dot) products.
 -- | Inner products should be linear and positive definite,
@@ -75,7 +79,7 @@ project u v = ((v <.> u) / magnitudeSq u)::Number *^ u
 
 
 instance vectorSpaceRing :: (Ring s) => VectorSpace s s where
-  (*^) x y = x * y
+  scaleV x y = x * y
 
 instance innerSpaceRing :: (Ring s) => InnerSpace s s where
   (<.>) x y = x * y
@@ -84,7 +88,7 @@ instance innerSpaceRing :: (Ring s) => InnerSpace s s where
 -- TODO: the constraint (AdditiveGroup (Tuple u v)) should be inferred from (VectorSpace u s) and (VectorSpace v s)
 -- instance vectorSpaceTuple :: (VectorSpace u s, VectorSpace v s) => VectorSpace (Tuple u v) s where
 instance vectorSpaceTuple :: (Ring s, AdditiveGroup (Tuple u v), VectorSpace u s, VectorSpace v s) => VectorSpace (Tuple u v) s where
-  (*^) s (Tuple u v) = Tuple (s*^u) (s*^v)
+  scaleV s (Tuple u v) = Tuple (s*^u) (s*^v)
 
 -- TODO: the constraints (AdditiveGroup (Tuple v v)) and (AdditiveGroup s) should be inferred from (InnerSpace v s)
 -- instance innerSpaceTuple :: (InnerSpace v s) => InnerSpace (Tuple v v) s where
@@ -93,17 +97,17 @@ instance innerSpaceTuple :: (Ring s, AdditiveGroup (Tuple v v), InnerSpace v s) 
 
 
 instance vectorSpaceArr :: (Ring s, AdditiveGroup (a -> v), VectorSpace v s) => VectorSpace (a -> v) s where
-  (*^) s = (<$>) (s *^)
+  scaleV s = (<$>) (s *^)
 
 instance vectorSpaceArr2 :: (Ring (a -> s), AdditiveGroup (a -> v), VectorSpace v s) => VectorSpace (a -> v) (a -> s) where
-  (*^) = lift2 (*^)
+  scaleV = lift2 (*^)
 
 instance innerSpaceArr :: (VectorSpace (a -> v) (a -> s), InnerSpace v s) => InnerSpace (a -> v) (a -> s) where
  (<.>) = lift2 (<.>)
 
 
 instance vectorSpaceVec :: (AdditiveGroup (Vec s v), Ring v) => VectorSpace (Vec s v) v where
-  (*^) s v = (s *^) <$> v
+  scaleV s v = (s *^) <$> v
 
 -- instance innerSpaceVec :: (VectorSpace (Vec s v) v) => InnerSpace (Vec s v) v where
 instance innerSpaceVec :: (VectorSpace (Vec s v) v, Ring v) => InnerSpace (Vec s v) v where
