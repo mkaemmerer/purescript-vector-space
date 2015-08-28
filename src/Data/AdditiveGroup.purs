@@ -24,9 +24,13 @@ class AdditiveGroup v where
   -- | The zero element: identity for '(^+^)'
   zeroV :: v
   -- | Add vectors
-  (^+^) :: v -> v -> v
+  addV :: v -> v -> v
   -- | Additive inverse
   negateV :: v -> v
+
+-- | Alias for `addV`
+(^+^) :: forall v. (AdditiveGroup v) => v -> v -> v
+(^+^) = addV
 
 -- | Group subtraction
 (^-^) :: forall v. (AdditiveGroup v) => v -> v -> v
@@ -40,35 +44,35 @@ sumV = foldr (^+^) zeroV
 
 instance additiveGroupUnit :: AdditiveGroup Unit where
   zeroV     = unit
-  (^+^) _ _ = unit
+  addV _ _  = unit
   negateV   = id
 
 instance additiveGroupRing :: (Ring s) => AdditiveGroup s where
   zeroV     = zero
-  (^+^) x y = x + y
+  addV x y  = x + y
   negateV x = negate x
 
 instance additiveGroupTuple :: (AdditiveGroup u, AdditiveGroup v) => AdditiveGroup (Tuple u v) where
   zeroV                           = Tuple zeroV zeroV
-  (^+^) (Tuple u v) (Tuple u' v') = Tuple (u^+^u') (v^+^v')
+  addV (Tuple u v) (Tuple u' v')  = Tuple (u^+^u') (v^+^v')
   negateV (Tuple u v)             = Tuple (negateV u) (negateV v)
 
 instance additiveGroupArr :: (AdditiveGroup v) => AdditiveGroup (u -> v) where
   zeroV   = pure zeroV
-  (^+^)   = lift2 (^+^)
+  addV    = lift2 (^+^)
   negateV = (negateV <$>)
 
 instance additiveGroupVec2 :: (AdditiveGroup v) => AdditiveGroup (Vec (Suc (Suc Zero)) v) where
   zeroV     = fromArray [zeroV, zeroV]
-  (^+^)     = lift2 (^+^)
+  addV      = lift2 (^+^)
   negateV v = negateV <$> v
 
 instance additiveGroupVec3 :: (AdditiveGroup v) => AdditiveGroup (Vec (Suc (Suc (Suc Zero))) v) where
   zeroV     = fromArray [zeroV, zeroV, zeroV]
-  (^+^)     = lift2 (^+^)
+  addV      = lift2 (^+^)
   negateV v = negateV <$> v
 
 instance additiveGroupVec4 :: (AdditiveGroup v) => AdditiveGroup (Vec (Suc (Suc (Suc (Suc Zero)))) v) where
   zeroV     = fromArray [zeroV, zeroV, zeroV, zeroV]
-  (^+^)     = lift2 (^+^)
+  addV      = lift2 (^+^)
   negateV v = negateV <$> v
