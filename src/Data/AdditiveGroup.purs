@@ -5,6 +5,8 @@ import Prelude
 import Control.Apply
 import Data.Tuple
 import Data.Foldable
+import Data.TypeNat
+import Data.Vector
 
 infixl 6 ^+^
 infixl 6 ^-^
@@ -56,3 +58,17 @@ instance additiveGroupArr :: (AdditiveGroup v) => AdditiveGroup (u -> v) where
   (^+^)   = lift2 (^+^)
   negateV = (negateV <$>)
 
+instance additiveGroupVec2 :: (AdditiveGroup v) => AdditiveGroup (Vec (Suc (Suc Zero)) v) where
+  zeroV     = fromArray [zeroV, zeroV]
+  (^+^)     = lift2 (^+^)
+  negateV v = negateV <$> v
+
+instance additiveGroupVec3 :: (AdditiveGroup v) => AdditiveGroup (Vec (Suc (Suc (Suc Zero))) v) where
+  zeroV     = fromArray [zeroV, zeroV, zeroV]
+  (^+^)     = lift2 (^+^)
+  negateV v = negateV <$> v
+
+instance additiveGroupVec4 :: (AdditiveGroup v) => AdditiveGroup (Vec (Suc (Suc (Suc (Suc Zero)))) v) where
+  zeroV     = fromArray [zeroV, zeroV, zeroV, zeroV]
+  (^+^)     = lift2 (^+^)
+  negateV v = negateV <$> v

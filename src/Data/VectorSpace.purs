@@ -6,6 +6,8 @@ import Math
 import Control.Apply
 import Data.Tuple
 import Data.AdditiveGroup
+import Data.Vector
+import Data.Foldable (foldl)
 
 infixr 7 *^
 infixr 7 <.>
@@ -98,3 +100,11 @@ instance vectorSpaceArr2 :: (Ring (a -> s), AdditiveGroup (a -> v), VectorSpace 
 
 instance innerSpaceArr :: (VectorSpace (a -> v) (a -> s), InnerSpace v s) => InnerSpace (a -> v) (a -> s) where
  (<.>) = lift2 (<.>)
+
+
+instance vectorSpaceVec :: (AdditiveGroup (Vec s v), Ring v) => VectorSpace (Vec s v) v where
+  (*^) s v = (s *^) <$> v
+
+-- instance innerSpaceVec :: (VectorSpace (Vec s v) v) => InnerSpace (Vec s v) v where
+instance innerSpaceVec :: (VectorSpace (Vec s v) v, Ring v) => InnerSpace (Vec s v) v where
+  (<.>) v v' = foldl (^+^) zeroV $ (<.>) <$> v <*> v'
