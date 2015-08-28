@@ -1,5 +1,7 @@
 module Data.VectorSpace where
 
+import Prelude
+
 import Math
 import Control.Apply
 import Data.Tuple

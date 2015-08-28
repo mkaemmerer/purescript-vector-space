@@ -1,5 +1,7 @@
 module Data.AdditiveGroup where
 
+import Prelude
+
 import Control.Apply
 import Data.Tuple
 import Data.Foldable
@@ -53,4 +55,4 @@ instance additiveGroupArr :: (AdditiveGroup v) => AdditiveGroup (u -> v) where
   zeroV   = pure zeroV
   (^+^)   = lift2 (^+^)
   negateV = (negateV <$>)
-  
+
